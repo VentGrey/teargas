@@ -1,5 +1,6 @@
-# Teargas
-What is it in my eyes? A piece of broken glass? Is this the time I should me on my knees for you?  (Papi-two rewritten in go)
+# Teargas - Simple REST API tester made in Go.
+[![Go](https://github.com/VentGrey/teargas/actions/workflows/go.yml/badge.svg)](https://github.com/VentGrey/teargas/actions/workflows/go.yml)
+[![CodeQL](https://github.com/VentGrey/teargas/actions/workflows/codeql.yml/badge.svg)](https://github.com/VentGrey/teargas/actions/workflows/codeql.yml)
 
 My personal REST API consuming software written in ~~Pascal~~ Go (for learning purposes).
 
