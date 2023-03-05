@@ -68,6 +68,11 @@ func main() {
 			os.Exit(1)
 		}
 	} else {
-		fmt.Println(JSONData)
+		jsonString, err := jsoniter.MarshalIndent(JSONData, "", "  ")
+		if err != nil {
+			fmt.Println("Error al pretty print el JSON:", err)
+			os.Exit(1)
+		}
+		fmt.Println(string(jsonString))
 	}
 }
