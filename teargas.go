@@ -11,7 +11,11 @@ import (
 
 func help() {
 	fmt.Println("Usage: teargas <URL> [output file]")
-	fmt.Println("Example: teargas http://example.com/ output.json")
+	fmt.Println("Example: teargas http://api.example.com/ output.json")
+	fmt.Println("Requests a JSON API and prints the response to stdout, optionally saving it to a file.")
+	fmt.Println("Options:")
+	fmt.Println("-h, --help  Show this help message and exit")
+	fmt.Println("Please report bugs at: ventgrey@gmail.com")
 }
 
 func main() {
@@ -23,10 +27,16 @@ func main() {
 		httpClient http.Client // HTTP client
 	)
 
+	// If the first argument is -h or --help, print help and exit
+	if len(os.Args) == 2 && (os.Args[1] == "-h" || os.Args[1] == "--help") {
+		help()
+		os.Exit(0)
+	}
 
 	// Leer parámetros de la línea de comandos.
 	if len(os.Args) < 2 {
-		help()
+		fmt.Println("Usage: teargas <URL> [output file]")
+		fmt.Println("Example: teargas http://example.com/ output.json")
 		os.Exit(1)
 	}
 
@@ -70,7 +80,7 @@ func main() {
 	} else {
 		jsonString, err := jsoniter.MarshalIndent(JSONData, "", "  ")
 		if err != nil {
-			fmt.Println("Error al pretty print el JSON:", err)
+			fmt.Println("Error al imprimir el JSON:", err)
 			os.Exit(1)
 		}
 		fmt.Println(string(jsonString))
