@@ -33,6 +33,9 @@ jobs:
         echo "Architecture: amd64" >> debian/DEBIAN/control
         echo "Maintainer: VentGrey <ventgrey@gmail.com>" >> debian/DEBIAN/control
         echo "Description: Small REST API tester written in Go" >> debian/DEBIAN/control
+        mkdir -p debian/usr/share/man/man1
+        cp teargas.1 debian/usr/share/man/man1
+        gzip -n -f debian/usr/share/man/man1/teargas.1
         mkdir -p debian/usr/local/bin
         cp teargas debian/usr/local/bin
         chmod +x debian/usr/local/bin/teargas
@@ -47,5 +50,5 @@ jobs:
         prerelease: true
         title: "Build"
         files: |
+          teargas
           *.deb
-          teargas.1
