@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -8,46 +9,25 @@ import (
 	"github.com/json-iterator/go"
 )
 
-func help() {
-	fmt.Println("Usage: teargas <URL> [output file]")
-	fmt.Println("Example: teargas http://api.example.com/ output.json")
-	fmt.Println("Requests a JSON API and prints the response to stdout, optionally saving it to a file.")
-	fmt.Println("Options:")
-	fmt.Println("-h, --help  Show this help message and exit")
-	fmt.Println("Please report bugs at: ventgrey@gmail.com")
-}
-
 func main() {
 	var (
-		URL string // URL to be tested
-		OutputFile string // Output file
-		SaveToFile bool // Save output to file
+		URL string // URL to be tested (Flag)
+		OutputFile string // Output file (Flag)
 		JSONData jsoniter.Any // JSON data
 		httpClient http.Client // HTTP client
 	)
 
-	// If the first argument is -h or --help, print help and exit
-	if len(os.Args) == 2 && (os.Args[1] == "-h" || os.Args[1] == "--help") {
-		help()
-		os.Exit(0)
+	flag.StringVar(&URL, "url", "https://localhost:8080/", "URL to be tested")
+	flag.StringVar(&OutputFile, "output", "output.json", "Output file")
+
+	flag.Usage = func() {
+		fmt.Printf("Usage: %s [options]\n", os.Args[0])
+		fmt.Printf("Example: %s -url http://example.com/ output.json\n", os.Args[0])
+		flag.PrintDefaults()
+		fmt.Println("Please report bugs at: ventgrey@gmail.com")
 	}
 
-	// Leer parámetros de la línea de comandos.
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: teargas <URL> [output file]")
-		fmt.Println("Example: teargas http://example.com/ output.json")
-		os.Exit(1)
-	}
-
-	URL = os.Args[1]
-
-	// Argumentos con dependencia. (OutputFile depende de SaveToFile)
-	if len(os.Args) > 2 {
-		OutputFile = os.Args[2]
-		SaveToFile = true
-	} else {
-		SaveToFile = false
-	}
+	flag.Parse()
 
 	// Realizar petición HTTP y obtener respuesta.
 	resp, err := httpClient.Get(URL)
@@ -71,17 +51,16 @@ func main() {
 	}
 
 	// Guardar el JSON en un archivo si es necesario.
-	if SaveToFile {
-		if err := ioutil.WriteFile(OutputFile, body, 0644); err != nil {
-			fmt.Println("Error al guardar el JSON en el archivo:", err)
-			os.Exit(1)
-		}
-	} else {
-		jsonString, err := jsoniter.MarshalIndent(JSONData, "", "  ")
-		if err != nil {
-			fmt.Println("Error al imprimir el JSON:", err)
-			os.Exit(1)
-		}
-		fmt.Println(string(jsonString))
+	if err := ioutil.WriteFile(OutputFile, body, 0644); err != nil {
+		fmt.Println("Error al guardar el JSON en el archivo:", err)
+		os.Exit(1)
 	}
+
+	jsonString, err := jsoniter.MarshalIndent(JSONData, "", "  ")
+	if err != nil {
+		fmt.Println("Error al imprimir el JSON:", err)
+		os.Exit(1)
+	}
+
+	fmt.Println(string(jsonString))
 }
