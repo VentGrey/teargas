@@ -1,14 +1,14 @@
-.TH PAPITWO 1 "march 2023" "Version 1.0" "Teargas Manual - VentGrey"
+.TH TEARGAS 1 "march 2023" "Version 1.1.0" "Teargas Manual - VentGrey"
 
 .SH NOMBRE
 Teargas - Small, extremely-portable, REST API consuming client.
 
 .SH SYNOPSIS
 .B teargas
-\fIURL\fR [\fIoutput_file.json\fR]
+\fIURL\fR \fIoutput_file.json\fR
 
 .SH DESCRIPION
- \fBTeargas\fR is a client that you can use to consume any simple REST API. It takes a URL as a parameter and returns its response in a .json formatted file. The output file is optional.
+ \fBTeargas\fR is a small, portable client that you can use to consume any simple REST API. It takes a URL as a parameter and returns its response in a .json formatted file. The program will output the resulting json to a output.json file (this can be changed).
 
 .SH OPTIONS
 .TP
@@ -21,16 +21,16 @@ Show a help message.
 
 .TP
 \fIoutput_file.json\fR
-The output_file.json name in case you wish to change it. If not provided, the REST API response goes to standard output.
+The output_file.json name in case you wish to change it.
 
 .SH EXAMPLES
 To consume a REST API and save the resulting response in a file:
 .B
-papitwo http://localhost:8080/api/data output.json
+teargas http://localhost:8080/api/data output.json
 
 To just show the response in standard output:
 .B
-papitwo http://localhost:8080/api/data
+teargas http://localhost:8080/api/data
 
 .SH AUTHOR
 This program was written by VentGrey & La Esquina Gris.
