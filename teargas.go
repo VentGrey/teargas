@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -9,20 +10,51 @@ import (
 	"github.com/json-iterator/go"
 )
 
+// This function should return a JWT token based in the username and password.
+func getJWToken(username, password, url string) (string, error) {
+	data := map[string]string{"username": username, "password": password}
+	jsonData, err := jsoniter.Marshal(data)
+
+	if err != nil {
+		return "", fmt.Errorf("Error al convertir los datos a JSON: %v", err)
+	}
+
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+
+	if err != nil {
+		return "", fmt.Errorf("Error al hacer la petición HTTP: %v", err)
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return "", fmt.Errorf("Error al leer el cuerpo de la respuesta HTTP: %v", err)
+	}
+
+	// Return the JWT token.
+	return string(body), nil
+}
+
 func main() {
 	var (
 		URL string // URL to be tested (Flag)
 		OutputFile string // Output file (Flag)
+		Username string // Username (Optional Flag)
+		Password string // Password (Optional Flag)
 		JSONData jsoniter.Any // JSON data
 		httpClient http.Client // HTTP client
 	)
 
 	flag.StringVar(&URL, "url", "https://localhost:8080/", "URL to be tested")
 	flag.StringVar(&OutputFile, "output", "output.json", "Output file")
+	flag.StringVar(&Username, "username", "", "Username (if needed for authentication)")
+	flag.StringVar(&Password, "password", "", "Password (if needed for authentication)")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage: %s [options]\n", os.Args[0])
-		fmt.Printf("Example: %s -url http://example.com/ output.json\n", os.Args[0])
+		fmt.Printf("Example: %s -url http://api.example.com/getData/1 output.json\n", os.Args[0])
 		flag.PrintDefaults()
 		fmt.Println("Please report bugs at: ventgrey@gmail.com")
 	}
