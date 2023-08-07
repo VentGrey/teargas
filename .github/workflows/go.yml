@@ -31,7 +31,7 @@ jobs:
         echo "Package: teargas" >> debian/DEBIAN/control
         echo "Version: 1.0.0" >> debian/DEBIAN/control
         echo "Architecture: amd64" >> debian/DEBIAN/control
-        echo "Maintainer: VentGrey <ventgrey@gmail.com>" >> debian/DEBIAN/control
+        echo "Maintainer: VentGrey <omar@laesquinagris.com>" >> debian/DEBIAN/control
         echo "Description: Small REST API tester written in Go" >> debian/DEBIAN/control
         mkdir -p debian/usr/share/man/man1
         cp teargas.1 debian/usr/share/man/man1

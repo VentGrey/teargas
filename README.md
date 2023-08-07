@@ -1,11 +1,20 @@
-# 🔥 Teargas - Simple REST API tester made in Go 🔍🕵️‍♂️🌐
+# 🔥 Teargas - Simple REST API tester made in Go with JWT support. 🔍🕵️‍♂️🌐
 
 [![Go](https://github.com/VentGrey/teargas/actions/workflows/go.yml/badge.svg)](https://github.com/VentGrey/teargas/actions/workflows/go.yml)
 [![CodeQL](https://github.com/VentGrey/teargas/actions/workflows/codeql.yml/badge.svg)](https://github.com/VentGrey/teargas/actions/workflows/codeql.yml)
 
-My personal REST API consuming software written in ~~Pascal~~ Go (for learning purposes). 📚💻
+My personal REST API consuming software written in Go. Teargas is a powerful yet lightweight tool designed for testing and consuming REST APIs with ease. With built-in JWT support, it's versatile and perfect for modern web development.
 
-Teargas is a very small program to consume simple REST API's. 💡💡💡
+
+## 🌟 Features
+
+- Simple & intuitive CLI interface.
+- JWT Authentication support.
+- Simple response statistics for quick evaluations.
+- Binary is **NOT** small.
+- Normally compiled binary size is ~7.3MB (Yes, fuck static binaries)
+- Stripped binary is ~5.0MB (Yep...)
+  
 
 ## 🚨 Copyright disclaimer
 
@@ -35,22 +44,41 @@ git clone https://github.com/VentGrey/teargas.git
 
 ```sh
 cd teargas
-go build
+
+# Build a normally compiled binary
+go build -o teargas teargas.go
+
+# Build a "stripped" binary
+go build -o teargas -ldflags="-s -w" teargas.go
 ```
 
 3. Run the program
 
 ```sh
-./teargas <URL> [output file]
+./teargas -url <URL> -output [output file]
+```
+
+4. (Optionally build a Debian Package)
+
+> Since `dh-make-golang` is walking crap. The method for building a Debian Package here is similar to the one used in Linux Mint.
+
+``` sh
+
 ```
 
 ## 🤖 Usage
 
+Basic usage:
+
 ```sh
-teargas <URL> [output file]
+teargas -url <URL> -output [output file]
 ```
 
-Requests a JSON API and prints the response to stdout, optionally saving it to a file. 📃🔍
+Make a request using JWT authentication:
+
+``` sh
+teargas -url <URL> -output [output file] -username <USERNAME> -password <YOURPASSWORD> -authurl <AUTH_URL>
+```
 
 ## 🤝 Contributing
 
@@ -58,12 +86,12 @@ Contributions are always welcome! 🤗...however I think this doesn't need much 
 
 ## 🐛 Bugs
 
-Please report any bugs to ventgrey@gmail.com 📧🐛
+Please report any bugs to omar@laesquinagris.com 📧🐛
 
 ## 📜 License
 
 Distributed under the GPL-2+ License. See LICENSE for more information. 📜📝
 
 ## 📖 References
-[GitHub Actions](https://github.com/features/actions) 🤖🔍
-[JSON-iterator for Go](https://github.com/json-iterator/go) MIT licensed. 📃🔍
+- [GitHub Actions](https://github.com/features/actions) 🤖🔍
+- [JSON-iterator for Go](https://github.com/json-iterator/go) MIT licensed. 📃🔍
