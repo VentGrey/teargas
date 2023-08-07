@@ -14,7 +14,7 @@ import (
 )
 
 // This function should return a JWT token based in the username and password.
-func getJWToken(username, password, url string) (string, error) {
+func getJWToken(username, password, authURL string) (string, error) {
 	data := map[string]string{"username": username, "password": password}
 	jsonData, err := jsoniter.Marshal(data)
 
@@ -22,7 +22,7 @@ func getJWToken(username, password, url string) (string, error) {
 		return "", fmt.Errorf("Error al convertir los datos a JSON: %v", err)
 	}
 
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(authURL, "application/json", bytes.NewBuffer(jsonData))
 
 	if err != nil {
 		return "", fmt.Errorf("Error al hacer la petición HTTP: %v", err)
@@ -36,7 +36,6 @@ func getJWToken(username, password, url string) (string, error) {
 		return "", fmt.Errorf("Error al leer el cuerpo de la respuesta HTTP: %v", err)
 	}
 
-	// Return the JWT token.
 	return string(body), nil
 }
 
@@ -46,6 +45,7 @@ func main() {
 		OutputFile string // Output file (Flag)
 		Username string // Username (Optional Flag)
 		Password string // Password (Optional Flag)
+		AuthURL string // URL to get the JWT token (Optional Flag)
 		JSONData jsoniter.Any // JSON data
 		httpClient http.Client // HTTP client
 	)
@@ -54,6 +54,8 @@ func main() {
 	flag.StringVar(&OutputFile, "output", "output.json", "Output file")
 	flag.StringVar(&Username, "username", "", "Username (if needed for authentication)")
 	flag.StringVar(&Password, "password", "", "Password (if needed for authentication)")
+	flag.StringVar(&AuthURL, "authurl", "", "Authentication URL (if JWT is needed)")
+
 
 	flag.Usage = func() {
 		fmt.Printf("Usage: %s [options]\n", os.Args[0])
@@ -64,10 +66,30 @@ func main() {
 
 	flag.Parse()
 
+	var jwtToken string
+	if Username != "" && Password != "" && AuthURL != "" {
+		var err error
+		jwtToken, err = getJWToken(Username, Password, AuthURL)
+		if err != nil {
+			color.Red("Error al obtener el JWT token: %v", err)
+			os.Exit(1)
+		}
+	}
+
 	startTime := time.Now()
 
+	req, err := http.NewRequest("GET", URL, nil)
+	if err != nil {
+		color.Red("Error al crear la petición HTTP: %v", err)
+		os.Exit(1)
+	}
+
+	if jwtToken != "" {
+		req.Header.Add("Authorization", "Bearer " + jwtToken)
+	}
+
 	// Realizar petición HTTP y obtener respuesta.
-	resp, err := httpClient.Get(URL)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		color.Red("Error al hacer la petición HTTP: %v", err)
 		os.Exit(1)
